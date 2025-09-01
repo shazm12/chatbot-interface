@@ -1,11 +1,20 @@
 import React from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { MessageCircle } from "lucide-react";
+import { useFlowContext } from "@/contexts/FlowContext";
 
-export function MessageNode({ data }: NodeProps): React.JSX.Element {
-  const nodeData = data;
+export function MessageNode({ data, id }: NodeProps): React.JSX.Element {
+  const { setSelectedNodeId } = useFlowContext();
+  
+  const handleNodeClick = (): void => {
+    setSelectedNodeId(id);
+  };
+
   return (
-    <div className="min-w-[200px] bg-white border-2 border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div 
+      onClick={handleNodeClick}
+      className="min-w-[200px] bg-white border-2 border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+    >
       {/* Node Header */}
       <div className="bg-blue-50 px-3 py-2 rounded-t-lg border-b border-gray-100">
         <div className="flex items-center gap-2">
