@@ -140,27 +140,6 @@ export enum NodeType {
 }
 
 
-export interface AppNode extends Node {
-  data: {
-    type: NodeType;
-    text: string;
-    icon: (props: LucideProps) => React.ReactNode;
-  }
-  position: {
-    x: number;
-    y: number;
-  };
-  selected: boolean;
-  draggable: boolean;
-  dragHandle: string;
-  dragging: boolean;
-  zIndex: number;
-  width: number;
-  height: number;
-  locked: boolean;
-  hidden: boolean;
-}
-
 // Utility types
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;
