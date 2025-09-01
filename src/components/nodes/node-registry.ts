@@ -1,7 +1,7 @@
 import { MessageNode } from "./message-node";
 
 export const nodeTypes = {
-  message: MessageNode,
+  MESSAGE: MessageNode,
 };
 
 export default nodeTypes;
