@@ -4,8 +4,9 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { TopBar } from "@/components/layout/top-bar";
 import { SidePanel } from "@/components/panels/side-panel";
 import { FlowCanvas } from "@/components/canvas/flow-canvas";
-import { AppState, FlowEdge, Message, SaveHandler, MessageHandler } from "@/types";
+import { Message } from "@/types";
 import { ReactFlowProvider } from '@xyflow/react';
+import { FlowProvider } from "@/contexts/FlowContext";
 
 
 
@@ -15,27 +16,16 @@ interface LayoutStyles {
   canvasArea: string;
 }
 
-const initialAppState: AppState = {
-  nodes: [], // Remove test node for now
-  edges: [],
-  selectedNode: null,
-  hasUnsavedChanges: false,
-  isLoading: false,
-};
-
 export default function Home(): React.JSX.Element {
-
-  const [appState, setAppState] = useState<AppState>(initialAppState);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading] = useState<boolean>(false);
+  const [hasUnsavedChanges] = useState<boolean>(false);
 
   const layoutStyles: LayoutStyles = useMemo(() => ({
     container: "h-screen w-full flex flex-col bg-gray-50",
     mainContent: "flex-1 flex",
     canvasArea: "flex-1"
   }), []);
-
-
-  const { nodes, edges, hasUnsavedChanges, isLoading } = appState;
 
   return (
     <div className={`${layoutStyles.container}`}>
@@ -47,21 +37,20 @@ export default function Home(): React.JSX.Element {
       
       {/* Main Content Area */}
       <ReactFlowProvider>
-        <div className={layoutStyles.mainContent}>
-          {/* Canvas Area */}
-          <div className={layoutStyles.canvasArea}>
-            <FlowCanvas 
-              nodes={nodes}
-              edges={edges}
+        <FlowProvider>
+          <div className={layoutStyles.mainContent}>
+            {/* Canvas Area */}
+            <div className={layoutStyles.canvasArea}>
+              <FlowCanvas />
+            </div>
+            
+            {/* Right Side Panel */}
+            <SidePanel 
+              isLoading={isLoading}
+              messages={messages}
             />
           </div>
-          
-          {/* Right Side Panel */}
-          <SidePanel 
-            isLoading={isLoading}
-            messages={messages}
-          />
-        </div>
+        </FlowProvider>
       </ReactFlowProvider>
     </div>
   );
