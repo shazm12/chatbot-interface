@@ -54,6 +54,7 @@ export interface TopBarProps {
 export interface SidePanelProps {
   onSendMessage?: MessageHandler;
   isLoading?: boolean;
+  className?: string;
 }
 
 
