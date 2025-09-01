@@ -70,24 +70,19 @@ export interface SidePanelProps {
   messages?: Message[];
 }
 
-// Message types
+
 export interface Message {
-  id: string;
-  content: string;
-  timestamp: Date;
-  sender: 'user' | 'bot';
-  type?: 'text' | 'image' | 'file';
-  metadata?: Record<string, any>;
+  text : string;
 }
 
-// Icon component types
+
 export interface IconProps {
   size?: number;
   className?: string;
   color?: string;
 }
 
-// Event handler types
+
 export type ClickHandler = () => void;
 export type AsyncClickHandler = () => Promise<void>;
 export type MessageHandler = (message: string) => void;
@@ -96,7 +91,7 @@ export type NodeChangeHandler = (changes: NodeChange[]) => void;
 export type EdgeChangeHandler = (changes: EdgeChange[]) => void;
 export type ConnectionHandler = (connection: Connection) => void;
 
-// Component state types
+
 export interface AppState {
   nodes: FlowNode[];
   edges: FlowEdge[];
@@ -106,7 +101,7 @@ export interface AppState {
   error?: string | null;
 }
 
-// Form types
+
 export interface FormState {
   isSubmitting: boolean;
   errors: Record<string, string>;
@@ -132,14 +127,14 @@ export interface ThemeColors {
   border: string;
 }
 
-// Layout types
+
 export interface LayoutConfig {
   topBarHeight: number;
   sidePanelWidth: number;
   canvasMinHeight: number;
 }
 
-// Configuration types
+
 export interface AppConfig {
   theme: ThemeColors;
   layout: LayoutConfig;
