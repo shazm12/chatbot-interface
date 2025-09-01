@@ -2,27 +2,29 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
-import { SidePanelProps, ClickHandler } from "@/types";
+import { MessageCircle } from "lucide-react";
+import { SidePanelProps, ClickHandler, NodeType } from "@/types";
 
 interface SidePanelComponentProps extends SidePanelProps {
   className?: string;
 }
 
 export function SidePanel({ 
-  onSendMessage, 
   isLoading = false,
   className = ""
 }: SidePanelComponentProps): React.JSX.Element {
   
   const handleSendMessage: ClickHandler = (): void => {
-    if (onSendMessage) {
-      onSendMessage("");
-    } else {
-      // TODO: Implement send message functionality
-      console.log("Send message clicked");
-    }
+    console.log("Send message clicked");
   };
+
+  const handleDragStart = (event: React.DragEvent<HTMLButtonElement>): void => {
+    console.log('Drag started with node type:', NodeType.MESSAGE);
+    event.dataTransfer.setData('application/reactflow', NodeType.MESSAGE);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
+  
 
   const panelWidth: string = "w-80";
 
@@ -31,11 +33,13 @@ export function SidePanel({
 
       <div className="p-4">
         <Button 
+          draggable
+          onDragStart={handleDragStart}
           onClick={handleSendMessage}
           disabled={isLoading}
-          className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-grab active:cursor-grabbing"
         >
-          <Send className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4" />
           Message
         </Button>
       </div>
