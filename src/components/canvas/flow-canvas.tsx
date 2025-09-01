@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -19,9 +19,13 @@ import {
   OnEdgesChange,
   OnConnect,
   ReactFlowProps,
+  ReactFlowInstance,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { CanvasProps, FlowNode, FlowEdge } from "@/types";
+import { CanvasProps, FlowEdge, NodeType } from "@/types";
+import { createNode } from "@/helpers/node/createNode";
+import nodeTypes from "@/components/nodes/node-registry";
 
 interface FlowCanvasComponentProps extends CanvasProps {
   className?: string;
@@ -43,7 +47,6 @@ interface BackgroundConfig {
   color: string;
 }
 
-// Initial empty state with proper typing
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
@@ -57,6 +60,8 @@ export function FlowCanvas({
   fitView = true
 }: FlowCanvasComponentProps): React.JSX.Element {
   
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
 
   const [internalNodes, setInternalNodes, internalOnNodesChange] = useNodesState(initialNodes);
   const [internalEdges, setInternalEdges, internalOnEdgesChange] = useEdgesState(initialEdges);
@@ -99,6 +104,49 @@ export function FlowCanvas({
     [propOnConnect, setInternalEdges]
   );
 
+
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      console.log('Drop event triggered');
+
+      const nodeType = event.dataTransfer.getData('application/reactflow');
+      console.log('Node type:', nodeType);
+
+      if (typeof nodeType === 'undefined' || !nodeType) {
+        console.log('No valid node type');
+        return;
+      }
+
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+      console.log('Position:', position);
+
+      const newNode = createNode(nodeType as NodeType, position);
+      console.log('Created node:', newNode);
+
+      if (propOnNodesChange) {
+        console.log('Using prop handler');
+        const newNodes = [...nodes, newNode];
+        propOnNodesChange([{ type: 'add', item: newNode }] as NodeChange[]);
+      } else {
+        console.log('Using internal handler, current nodes:', nodes.length);
+        setInternalNodes((nds) => {
+          console.log('Adding node to internal nodes:', nds.length + 1);
+          return [...nds, newNode];
+        });
+      }
+    },
+    [screenToFlowPosition, nodes, propOnNodesChange, setInternalNodes]
+  );
+
   // Memoized style configurations
   const flowStyles: FlowStyles = useMemo(() => ({
     background: "bg-gray-50",
@@ -127,8 +175,13 @@ export function FlowCanvas({
   }), [nodes, edges, onNodesChange, onEdgesChange, onConnect, fitView, flowStyles.background]);
 
   return (
-    <div className={`w-full h-full ${flowStyles.background} ${className}`}>
-      <ReactFlow {...reactFlowProps}>
+    <div 
+      ref={reactFlowWrapper}
+      className={`w-full h-full ${flowStyles.background} ${className}`}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+    >
+      <ReactFlow {...reactFlowProps} nodeTypes={nodeTypes}>
         <Controls className={flowStyles.controlsClass} />
         <MiniMap 
           className={flowStyles.minimapClass}
