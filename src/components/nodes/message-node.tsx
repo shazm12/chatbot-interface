@@ -1,16 +1,9 @@
 import React from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { MessageCircle } from "lucide-react";
-import { AppNode } from '@/types';
 
-interface MessageNodeData {
-  type: string;
-  label: string;
-  content: string;
-}
-
-export function MessageNode({ data, isConnectable }: NodeProps): React.JSX.Element {
-  const nodeData = data as any;
+export function MessageNode({ data }: NodeProps): React.JSX.Element {
+  const nodeData = data;
   return (
     <div className="min-w-[200px] bg-white border-2 border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       {/* Node Header */}
@@ -35,13 +28,11 @@ export function MessageNode({ data, isConnectable }: NodeProps): React.JSX.Eleme
         type="target"
         position={Position.Left}
         className="w-3 h-3 bg-green-400 border-2 border-white"
-        isConnectable={isConnectable}
       />
       <Handle
         type="source"
         position={Position.Right}
         className="w-3 h-3 bg-green-400 border-2 border-white"
-        isConnectable={isConnectable}
       />
     </div>
   );
