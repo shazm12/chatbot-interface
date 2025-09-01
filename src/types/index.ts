@@ -7,6 +7,7 @@ import {
   EdgeChange, 
   Connection 
 } from '@xyflow/react';
+import { LucideProps } from 'lucide-react';
 
 // Button component types
 export interface ButtonProps {
@@ -18,26 +19,13 @@ export interface ButtonProps {
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
-// Panel component types
+
 export interface PanelProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-// Flow-specific types extending React Flow types
-export interface FlowNode extends Node {
-  id: string;
-  type: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  data: {
-    label: string;
-    content?: string;
-    [key: string]: any;
-  };
-}
+
 
 export interface FlowEdge extends Edge {
   id: string;
@@ -93,9 +81,9 @@ export type ConnectionHandler = (connection: Connection) => void;
 
 
 export interface AppState {
-  nodes: FlowNode[];
-  edges: FlowEdge[];
-  selectedNode: FlowNode | null;
+  nodes: Node[];
+  edges: Edge[];
+  selectedNode: Node | null;
   hasUnsavedChanges: boolean;
   isLoading: boolean;
   error?: string | null;
@@ -143,6 +131,34 @@ export interface AppConfig {
     realTimeSync: boolean;
     keyboardShortcuts: boolean;
   };
+}
+
+export enum NodeType {
+  MESSAGE = 'message',
+  USER = 'user',
+  BOT = 'bot',
+}
+
+
+export interface AppNode extends Node {
+  data: {
+    type: NodeType;
+    text: string;
+    icon: (props: LucideProps) => React.ReactNode;
+  }
+  position: {
+    x: number;
+    y: number;
+  };
+  selected: boolean;
+  draggable: boolean;
+  dragHandle: string;
+  dragging: boolean;
+  zIndex: number;
+  width: number;
+  height: number;
+  locked: boolean;
+  hidden: boolean;
 }
 
 // Utility types
