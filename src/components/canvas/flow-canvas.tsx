@@ -57,15 +57,15 @@ export function FlowCanvas({
   fitView = true
 }: FlowCanvasComponentProps): React.JSX.Element {
   
-  // Use prop values if provided, otherwise use internal state
+
   const [internalNodes, setInternalNodes, internalOnNodesChange] = useNodesState(initialNodes);
   const [internalEdges, setInternalEdges, internalOnEdgesChange] = useEdgesState(initialEdges);
 
-  // Determine which nodes/edges to use
+
   const nodes: Node[] = propNodes || internalNodes;
   const edges: Edge[] = propEdges || internalEdges;
 
-  // Event handlers with proper typing
+
   const onNodesChange: OnNodesChange = useCallback(
     (changes: NodeChange[]): void => {
       if (propOnNodesChange) {
@@ -110,9 +110,9 @@ export function FlowCanvas({
 
   const backgroundConfig: BackgroundConfig = useMemo(() => ({
     variant: BackgroundVariant.Dots,
-    gap: 20,
-    size: 1,
-    color: "#e5e7eb"
+    gap: 16,
+    size: 2,
+    color: "#d1d5db"
   }), []);
 
   // ReactFlow props with proper typing

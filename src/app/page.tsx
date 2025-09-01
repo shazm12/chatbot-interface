@@ -14,7 +14,6 @@ interface LayoutStyles {
   canvasArea: string;
 }
 
-// Initial application state with proper typing
 const initialAppState: AppState = {
   nodes: [],
   edges: [],
@@ -36,8 +35,6 @@ export default function Home(): React.JSX.Element {
   }), []);
 
 
-
-  // Destructure app state for cleaner component props
   const { nodes, edges, hasUnsavedChanges, isLoading } = appState;
 
   return (
