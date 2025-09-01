@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { SidePanelProps } from "@/types";
 import { useFlowContext } from "@/contexts/FlowContext";
 import { NodesScreen } from "./nodes-screen";
 import { EditScreen } from "./edit-screen";
 
+interface SidePanelComponentProps {
+  className?: string;
+}
+
 
 export function SidePanel({ 
-  isLoading = false,
   className = ""
-}: SidePanelProps): React.JSX.Element {
+}: SidePanelComponentProps): React.JSX.Element {
   
   const { selectedNodeId } = useFlowContext();
   const [currentScreen, setCurrentScreen] = useState<'nodes' | 'edit'>('nodes');
@@ -30,7 +32,7 @@ export function SidePanel({
   return (
     <div className={`${panelWidth} h-full bg-white border-l border-gray-200 flex flex-col ${className}`}>
       {currentScreen === 'nodes' && (
-        <NodesScreen isLoading={isLoading} />
+        <NodesScreen />
       )}
       
       {currentScreen === 'edit' && (
