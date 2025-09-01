@@ -120,3 +120,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* React Flow Edge Arrows */
+.react-flow__edge {
+  stroke: #b1b1b7;
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected {
+  stroke: #22c55e;
+}
+
+.react-flow__edge-path {
+  stroke: inherit;
+  stroke-width: inherit;
+  fill: none;
+}
+
+.react-flow__arrowhead {
+  fill: #b1b1b7;
+  stroke: #b1b1b7;
+}
+
+.react-flow__edge.selected .react-flow__arrowhead {
+  fill: #22c55e;
+  stroke: #22c55e;
+}
