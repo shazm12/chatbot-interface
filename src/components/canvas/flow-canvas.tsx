@@ -6,28 +6,20 @@ import {
   Background,
   Controls,
   MiniMap,
-  useNodesState,
-  useEdgesState,
   addEdge,
   Connection,
-  Edge,
-  Node,
   BackgroundVariant,
-  NodeChange,
-  EdgeChange,
-  OnNodesChange,
-  OnEdgesChange,
   OnConnect,
   ReactFlowProps,
-  ReactFlowInstance,
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { CanvasProps, FlowEdge, NodeType } from "@/types";
+import { NodeType } from "@/types";
 import { createNode } from "@/helpers/node/createNode";
 import nodeTypes from "@/components/nodes/node-registry";
+import { useFlowContext } from "@/contexts/FlowContext";
 
-interface FlowCanvasComponentProps extends CanvasProps {
+interface FlowCanvasComponentProps {
   className?: string;
   fitView?: boolean;
 }
@@ -47,61 +39,28 @@ interface BackgroundConfig {
   color: string;
 }
 
-const initialNodes: Node[] = [];
-const initialEdges: Edge[] = [];
-
 export function FlowCanvas({ 
-  nodes: propNodes, 
-  edges: propEdges,
-  onNodesChange: propOnNodesChange,
-  onEdgesChange: propOnEdgesChange,
-  onConnect: propOnConnect,
   className = "",
   fitView = true
 }: FlowCanvasComponentProps): React.JSX.Element {
   
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
-
-  const [internalNodes, setInternalNodes, internalOnNodesChange] = useNodesState(initialNodes);
-  const [internalEdges, setInternalEdges, internalOnEdgesChange] = useEdgesState(initialEdges);
-
-
-  const nodes: Node[] = propNodes || internalNodes;
-  const edges: Edge[] = propEdges || internalEdges;
-
-
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes: NodeChange[]): void => {
-      if (propOnNodesChange) {
-        propOnNodesChange(changes);
-      } else {
-        internalOnNodesChange(changes);
-      }
-    },
-    [propOnNodesChange, internalOnNodesChange]
-  );
-
-  const onEdgesChange: OnEdgesChange = useCallback(
-    (changes: EdgeChange[]): void => {
-      if (propOnEdgesChange) {
-        propOnEdgesChange(changes);
-      } else {
-        internalOnEdgesChange(changes);
-      }
-    },
-    [propOnEdgesChange, internalOnEdgesChange]
-  );
+  
+  const { 
+    nodes, 
+    edges, 
+    setNodes, 
+    setEdges, 
+    onNodesChange, 
+    onEdgesChange 
+  } = useFlowContext();
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection): void => {
-      if (propOnConnect) {
-        propOnConnect(connection);
-      } else {
-        setInternalEdges((eds: Edge[]) => addEdge(connection, eds));
-      }
+      setEdges((eds) => addEdge(connection, eds));
     },
-    [propOnConnect, setInternalEdges]
+    [setEdges]
   );
 
 
@@ -132,19 +91,13 @@ export function FlowCanvas({
       const newNode = createNode(nodeType as NodeType, position);
       console.log('Created node:', newNode);
 
-      if (propOnNodesChange) {
-        console.log('Using prop handler');
-        const newNodes = [...nodes, newNode];
-        propOnNodesChange([{ type: 'add', item: newNode }] as NodeChange[]);
-      } else {
-        console.log('Using internal handler, current nodes:', nodes.length);
-        setInternalNodes((nds) => {
-          console.log('Adding node to internal nodes:', nds.length + 1);
-          return [...nds, newNode];
-        });
-      }
+      console.log('Adding node, current nodes:', nodes.length);
+      setNodes((nds) => {
+        console.log('Adding node to nodes:', nds.length + 1);
+        return [...nds, newNode];
+      });
     },
-    [screenToFlowPosition, nodes, propOnNodesChange, setInternalNodes]
+    [screenToFlowPosition, nodes, setNodes]
   );
 
   // Memoized style configurations
@@ -163,7 +116,7 @@ export function FlowCanvas({
     color: "#d1d5db"
   }), []);
 
-  // ReactFlow props with proper typing
+
   const reactFlowProps: Partial<ReactFlowProps> = useMemo(() => ({
     nodes,
     edges,
@@ -171,7 +124,11 @@ export function FlowCanvas({
     onEdgesChange,
     onConnect,
     fitView,
-    className: flowStyles.background
+    className: flowStyles.background,
+    defaultEdgeOptions: {
+      style: { stroke: '#b1b1b7', strokeWidth: 2 },
+      markerEnd: { type: 'arrow', color: '#b1b1b7' },
+    },
   }), [nodes, edges, onNodesChange, onEdgesChange, onConnect, fitView, flowStyles.background]);
 
   return (
@@ -194,6 +151,42 @@ export function FlowCanvas({
           size={backgroundConfig.size}
           color={backgroundConfig.color}
         />
+        
+        {/* SVG definitions for edge arrows */}
+        <svg width="0" height="0">
+          <defs>
+            <marker
+              id="edge-arrow"
+              markerWidth="12"
+              markerHeight="12"
+              refX="9"
+              refY="3"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path 
+                d="M0,0 L0,6 L9,3 z" 
+                fill="#b1b1b7" 
+                stroke="#b1b1b7"
+              />
+            </marker>
+            <marker
+              id="edge-arrow-selected"
+              markerWidth="12"
+              markerHeight="12"
+              refX="9"
+              refY="3"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path 
+                d="M0,0 L0,6 L9,3 z" 
+                fill="#22c55e" 
+                stroke="#22c55e"
+              />
+            </marker>
+          </defs>
+        </svg>
       </ReactFlow>
     </div>
   );
