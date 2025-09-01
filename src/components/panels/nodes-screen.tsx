@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { NodeType } from "@/types";
 
-interface NodesScreenProps {
-  isLoading?: boolean;
-}
-
-export function NodesScreen({ isLoading = false }: NodesScreenProps): React.JSX.Element {
+export function NodesScreen(): React.JSX.Element {
   
   const handleDragStart = (event: React.DragEvent<HTMLButtonElement>): void => {
     event.dataTransfer.setData('application/reactflow', NodeType.MESSAGE);
@@ -24,8 +20,7 @@ export function NodesScreen({ isLoading = false }: NodesScreenProps): React.JSX.
         <Button 
           draggable
           onDragStart={handleDragStart}
-          disabled={isLoading}
-          className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-grab active:cursor-grabbing"
+          className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 cursor-grab active:cursor-grabbing"
         >
           <MessageCircle className="w-4 h-4" />
           Message

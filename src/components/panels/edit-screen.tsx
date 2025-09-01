@@ -11,7 +11,7 @@ interface EditScreenProps {
 }
 
 export function EditScreen({ onBack }: EditScreenProps): React.JSX.Element {
-  const { nodes, setNodes, selectedNodeId, setSelectedNodeId } = useFlowContext();
+  const { nodes, setNodes, selectedNodeId, setSelectedNodeId, isLoading } = useFlowContext();
   
 
   const selectedNode = nodes.find(node => node.id === selectedNodeId);  
@@ -93,14 +93,16 @@ export function EditScreen({ onBack }: EditScreenProps): React.JSX.Element {
         <div className="flex gap-2 pt-2">
           <Button 
             onClick={handleSave}
-            className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+            disabled={isLoading}
+            className="flex-1 bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save
+            {isLoading ? 'Saving...' : 'Save'}
           </Button>
           <Button 
             onClick={handleCancel}
             variant="outline"
             className="flex-1"
+            disabled={isLoading}
           >
             Cancel
           </Button>

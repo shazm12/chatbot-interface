@@ -2,29 +2,24 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { TopBarProps, ClickHandler } from "@/types";
+import { useFlowContext } from "@/contexts/FlowContext";
 
-interface TopBarComponentProps extends TopBarProps {
+interface TopBarComponentProps {
   className?: string;
 }
 
 export function TopBar({ 
-  onSave, 
-  isSaving = false, 
-  hasChanges = false,
   className = ""
 }: TopBarComponentProps): React.JSX.Element {
   
-  const handleSaveChanges: ClickHandler = (): void => {
-    if (onSave) {
-      onSave();
-    } else {
-      // TODO: Implement save functionality
-    }
+  const { isLoading, hasUnsavedChanges, saveChanges } = useFlowContext();
+  
+  const handleSaveChanges = (): void => {
+    saveChanges();
   };
 
-  const buttonText: string = isSaving ? "Saving..." : "Save Changes";
-  const isDisabled: boolean = isSaving || !hasChanges;
+  const buttonText: string = isLoading ? "Saving..." : "Save Changes";
+  const isDisabled: boolean = isLoading || !hasUnsavedChanges;
 
   return (
     <div className={`w-full h-16 bg-white border-b border-gray-200 flex items-center justify-end px-6 ${className}`}>
