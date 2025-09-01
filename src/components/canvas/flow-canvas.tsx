@@ -58,6 +58,12 @@ export function FlowCanvas({
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection): void => {
+      
+        // Prevent self-connections
+      if (connection.source === connection.target) {
+        return;
+      }
+      
       setEdges((eds) => addEdge(connection, eds));
     },
     [setEdges]
