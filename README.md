@@ -11,58 +11,6 @@ A modern, interactive chatbot flow builder built with Next.js, React Flow, Shadc
 - **Save and manage** chatbot flow configurations
 - **Visualize** the complete chatbot structure in an organized, scalable way
 
-## 🏗️ Application Architecture
-
-```mermaid
-graph TB
-    subgraph "User Interface"
-        TB[Top Bar<br/>Save Changes Button]
-        SP[Side Panel<br/>Message Node Button]
-        FC[Flow Canvas<br/>React Flow Background]
-    end
-    
-    subgraph "State Management"
-        FCX[Flow Context<br/>Global State Provider]
-        NS[Nodes State]
-        ES[Edges State]
-        SN[Selected Node]
-        UC[Unsaved Changes]
-    end
-    
-    subgraph "Node Management"
-        MN[Message Node<br/>Custom Component]
-        CN[Create Node<br/>Helper Function]
-        DN[Drag & Drop<br/>Event Handlers]
-    end
-    
-    subgraph "User Flow"
-        U1[User drags Message button]
-        U2[User drops on canvas]
-        U3[Node appears at drop location]
-        U4[User clicks node to edit]
-        U5[User updates message text]
-        U6[User saves changes]
-    end
-    
-    TB --> FCX
-    SP --> FCX
-    FC --> FCX
-    FCX --> NS
-    FCX --> ES
-    FCX --> SN
-    FCX --> UC
-    
-    SP --> DN
-    DN --> CN
-    CN --> MN
-    MN --> FC
-    
-    U1 --> U2
-    U2 --> U3
-    U3 --> U4
-    U4 --> U5
-    U5 --> U6
-```
 
 ## ✨ Key Features
 
@@ -125,39 +73,6 @@ graph TB
 - **React Flow**: Powerful library for building node-based interfaces
 - **Lucide React**: Beautiful, customizable icon library
 
-## 📁 Project Structure
-
-```
-src/
-├── app/                 # Next.js app directory
-├── components/          # Reusable UI components
-│   ├── canvas/         # Flow canvas and related components
-│   ├── layout/         # Layout components (TopBar, etc.)
-│   ├── nodes/          # Custom node components
-│   ├── panels/         # Side panel components
-│   └── ui/             # Shadcn/ui components
-├── contexts/            # React Context providers
-├── helpers/             # Utility functions
-├── types/               # TypeScript type definitions
-└── lib/                 # Utility libraries
-```
-
-## 🔄 State Management
-
-The application uses React Context (`FlowContext`) to manage:
-- **Nodes**: All message nodes on the canvas
-- **Edges**: Connections between nodes
-- **Selected Node**: Currently selected node for editing
-- **Unsaved Changes**: Track modifications for save button state
-- **Loading States**: UI feedback during operations
-
-## 🎯 Use Cases
-
-- **Customer Support Bots**: Design automated response flows
-- **Lead Generation**: Create interactive qualification sequences
-- **FAQ Systems**: Build intelligent question-answer flows
-- **Onboarding**: Design user onboarding experiences
-- **E-commerce**: Create shopping assistant flows
 
 ## 🚧 Future Enhancements
 
@@ -168,10 +83,3 @@ The application uses React Context (`FlowContext`) to manage:
 - **Export/Import**: Save and share flow configurations
 - **Analytics**: Track flow performance and user interactions
 
-## 🤝 Contributing
-
-This project follows industry best practices for code organization and architecture. Contributions are welcome!
-
-## 📄 License
-
-This project is part of the Bitespeed ecosystem for building intelligent chatbot solutions.
