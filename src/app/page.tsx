@@ -4,7 +4,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { TopBar } from "@/components/layout/top-bar";
 import { SidePanel } from "@/components/panels/side-panel";
 import { FlowCanvas } from "@/components/canvas/flow-canvas";
-import { Message } from "@/types";
 import { ReactFlowProvider } from '@xyflow/react';
 import { FlowProvider } from "@/contexts/FlowContext";
 
@@ -17,10 +16,6 @@ interface LayoutStyles {
 }
 
 export default function Home(): React.JSX.Element {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading] = useState<boolean>(false);
-  const [hasUnsavedChanges] = useState<boolean>(false);
-
   const layoutStyles: LayoutStyles = useMemo(() => ({
     container: "h-screen w-full flex flex-col bg-gray-50",
     mainContent: "flex-1 flex",
@@ -29,15 +24,11 @@ export default function Home(): React.JSX.Element {
 
   return (
     <div className={`${layoutStyles.container}`}>
-      {/* Top Bar */}
-      <TopBar 
-        isSaving={isLoading}
-        hasChanges={hasUnsavedChanges}
-      />
-      
-      {/* Main Content Area */}
       <ReactFlowProvider>
         <FlowProvider>
+          {/* Top Bar */}
+          <TopBar />
+          {/* Main Content Area */}
           <div className={layoutStyles.mainContent}>
             {/* Canvas Area */}
             <div className={layoutStyles.canvasArea}>
@@ -45,10 +36,7 @@ export default function Home(): React.JSX.Element {
             </div>
             
             {/* Right Side Panel */}
-            <SidePanel 
-              isLoading={isLoading}
-              messages={messages}
-            />
+            <SidePanel />
           </div>
         </FlowProvider>
       </ReactFlowProvider>
