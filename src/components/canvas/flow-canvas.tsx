@@ -78,13 +78,10 @@ export function FlowCanvas({
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
-      console.log('Drop event triggered');
 
       const nodeType = event.dataTransfer.getData('application/reactflow');
-      console.log('Node type:', nodeType);
 
       if (typeof nodeType === 'undefined' || !nodeType) {
-        console.log('No valid node type');
         return;
       }
 
@@ -92,14 +89,10 @@ export function FlowCanvas({
         x: event.clientX,
         y: event.clientY,
       });
-      console.log('Position:', position);
 
       const newNode = createNode(nodeType as NodeType, position);
-      console.log('Created node:', newNode);
 
-      console.log('Adding node, current nodes:', nodes.length);
       setNodes((nds) => {
-        console.log('Adding node to nodes:', nds.length + 1);
         return [...nds, newNode];
       });
     },

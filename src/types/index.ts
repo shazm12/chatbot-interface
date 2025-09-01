@@ -7,7 +7,6 @@ import {
   EdgeChange, 
   Connection 
 } from '@xyflow/react';
-import { LucideProps } from 'lucide-react';
 
 // Button component types
 export interface ButtonProps {
@@ -36,7 +35,7 @@ export interface FlowEdge extends Edge {
   label?: string;
 }
 
-// Canvas component types
+
 export interface CanvasProps {
   nodes?: Node[];
   edges?: Edge[];
@@ -45,7 +44,7 @@ export interface CanvasProps {
   onConnect?: (connection: Connection) => void;
 }
 
-// Layout component types
+
 export interface TopBarProps {
   onSave?: SaveHandler;
   isSaving?: boolean;
@@ -55,12 +54,6 @@ export interface TopBarProps {
 export interface SidePanelProps {
   onSendMessage?: MessageHandler;
   isLoading?: boolean;
-  messages?: Message[];
-}
-
-
-export interface Message {
-  text : string;
 }
 
 
@@ -134,9 +127,9 @@ export interface AppConfig {
 }
 
 export enum NodeType {
-  MESSAGE = 'message',
-  USER = 'user',
-  BOT = 'bot',
+  MESSAGE = 'MESSAGE',
+  USER = 'USER',
+  BOT = 'BOT',
 }
 
 

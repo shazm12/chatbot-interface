@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
-import { SidePanelProps, ClickHandler, NodeType } from "@/types";
+import React, { useState, useEffect } from 'react';
+import { SidePanelProps } from "@/types";
+import { useFlowContext } from "@/contexts/FlowContext";
+import { NodesScreen } from "./nodes-screen";
+import { EditScreen } from "./edit-screen";
 
 interface SidePanelComponentProps extends SidePanelProps {
   className?: string;
@@ -14,35 +15,30 @@ export function SidePanel({
   className = ""
 }: SidePanelComponentProps): React.JSX.Element {
   
-  const handleSendMessage: ClickHandler = (): void => {
-    console.log("Send message clicked");
-  };
+  const { selectedNodeId } = useFlowContext();
+  const [currentScreen, setCurrentScreen] = useState<'nodes' | 'edit'>('nodes');
 
-  const handleDragStart = (event: React.DragEvent<HTMLButtonElement>): void => {
-    console.log('Drag started with node type:', NodeType.MESSAGE);
-    event.dataTransfer.setData('application/reactflow', NodeType.MESSAGE);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+  useEffect(() => {
+    if (selectedNodeId) {
+      setCurrentScreen('edit');
+    }
+  }, [selectedNodeId]);
 
-  
+  const handleBackToNodes = (): void => {
+    setCurrentScreen('nodes');
+  };
 
   const panelWidth: string = "w-80";
 
   return (
     <div className={`${panelWidth} h-full bg-white border-l border-gray-200 flex flex-col ${className}`}>
-
-      <div className="p-4">
-        <Button 
-          draggable
-          onDragStart={handleDragStart}
-          onClick={handleSendMessage}
-          disabled={isLoading}
-          className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-grab active:cursor-grabbing"
-        >
-          <MessageCircle className="w-4 h-4" />
-          Message
-        </Button>
-      </div>
+      {currentScreen === 'nodes' && (
+        <NodesScreen isLoading={isLoading} />
+      )}
+      
+      {currentScreen === 'edit' && (
+        <EditScreen onBack={handleBackToNodes} />
+      )}
     </div>
   );
 }

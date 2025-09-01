@@ -20,7 +20,6 @@ export function TopBar({
       onSave();
     } else {
       // TODO: Implement save functionality
-      console.log("Save changes clicked");
     }
   };
 
