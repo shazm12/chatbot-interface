@@ -6,14 +6,11 @@ import { useFlowContext } from "@/contexts/FlowContext";
 import { NodesScreen } from "./nodes-screen";
 import { EditScreen } from "./edit-screen";
 
-interface SidePanelComponentProps extends SidePanelProps {
-  className?: string;
-}
 
 export function SidePanel({ 
   isLoading = false,
   className = ""
-}: SidePanelComponentProps): React.JSX.Element {
+}: SidePanelProps): React.JSX.Element {
   
   const { selectedNodeId } = useFlowContext();
   const [currentScreen, setCurrentScreen] = useState<'nodes' | 'edit'>('nodes');
