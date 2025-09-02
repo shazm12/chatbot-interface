@@ -28,8 +28,7 @@ export function EditScreen({ onBack }: EditScreenProps): React.JSX.Element {
               ...node, 
               data: { 
                 ...node.data, 
-                content: messageText,
-                label: 'Message'
+                content: messageText
               } 
             }
           : node
