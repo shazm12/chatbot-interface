@@ -24,6 +24,10 @@ export function SidePanel({
     }
   }, [selectedNodeId]);
 
+  const handleBackToNodes = (): void => {
+    setCurrentScreen('nodes');
+  };
+
   const panelWidth: string = "w-80";
 
   return (
@@ -33,7 +37,7 @@ export function SidePanel({
       )}
       
       {currentScreen === 'edit' && (
-        <EditScreen />
+        <EditScreen onBack={handleBackToNodes} />
       )}
     </div>
   );
