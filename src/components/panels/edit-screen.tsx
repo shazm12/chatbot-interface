@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft } from "lucide-react";
 import { useFlowContext } from "@/contexts/FlowContext";
+import { NodeType } from '@/types';
 
 interface EditScreenProps {
   onBack: () => void;
@@ -59,6 +60,25 @@ export function EditScreen({ onBack }: EditScreenProps): React.JSX.Element {
       </div>
     );
   }
+
+  if(selectedNode.type !== NodeType.MESSAGE) {
+    return (
+      <div className="p-4">
+        <div className="text-center text-gray-500">
+          <p>Cannot edit {selectedNode.type?.toLowerCase()} node type</p>
+          <Button 
+            onClick={onBack}
+            variant="outline" 
+            className="mt-2"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
 
   return (
     <div className="p-4 space-y-4">

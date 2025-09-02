@@ -5,8 +5,12 @@ import {
   Edge, 
   NodeChange, 
   EdgeChange, 
-  Connection 
+  Connection,
+  NodeProps
 } from '@xyflow/react';
+
+import type { LucideIcon } from "lucide-react";
+
 
 // Button component types
 export interface ButtonProps {
@@ -129,10 +133,33 @@ export interface AppConfig {
 
 export enum NodeType {
   MESSAGE = 'MESSAGE',
-  USER = 'USER',
-  BOT = 'BOT',
+  USER = 'USER'
 }
 
+
+export interface NodeConfig {
+  type: NodeType;
+  label: string;
+  icon: React.ComponentType<any>;
+  defaultData: Record<string, any>;
+}
+
+
+export interface MessageNodeData extends NodeProps {
+  data: {
+    label?: string;
+    content?: string;
+    [key: string]: any;
+  };
+}
+
+export interface UserNodeData extends NodeProps {
+  data: {
+    label?: string;
+    title?: string;
+    [key: string]: any;
+  };
+}
 
 // Utility types
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
