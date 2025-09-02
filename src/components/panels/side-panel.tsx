@@ -17,15 +17,12 @@ export function SidePanel({
   const { selectedNodeId } = useFlowContext();
   const [currentScreen, setCurrentScreen] = useState<'nodes' | 'edit'>('nodes');
 
+  // Automatically switch to edit screen when a node is selected
   useEffect(() => {
     if (selectedNodeId) {
       setCurrentScreen('edit');
     }
   }, [selectedNodeId]);
-
-  const handleBackToNodes = (): void => {
-    setCurrentScreen('nodes');
-  };
 
   const panelWidth: string = "w-80";
 
@@ -36,7 +33,7 @@ export function SidePanel({
       )}
       
       {currentScreen === 'edit' && (
-        <EditScreen onBack={handleBackToNodes} />
+        <EditScreen />
       )}
     </div>
   );

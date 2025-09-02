@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { NodeType } from "@/types";
 import { nodeConfigs, getAvailableNodeTypes } from "@/config/node-configs";
 
+
 export function NodesScreen(): React.JSX.Element {
   
+  // Sets drag data for React Flow when dragging starts
   const handleDragStart = (event: React.DragEvent<HTMLButtonElement>, nodeType: NodeType): void => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';

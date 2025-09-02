@@ -19,12 +19,6 @@ import { createNode } from "@/helpers/node/createNode";
 import { GenericNode } from "@/components/nodes/generic-node";
 import { useFlowContext } from "@/contexts/FlowContext";
 
-
-const nodeTypes = {
-  [NodeType.MESSAGE]: GenericNode,
-  [NodeType.USER]: GenericNode,
-};
-
 interface FlowCanvasComponentProps {
   className?: string;
   fitView?: boolean;
@@ -45,6 +39,7 @@ interface BackgroundConfig {
   color: string;
 }
 
+
 export function FlowCanvas({ 
   className = "",
   fitView = true
@@ -63,21 +58,24 @@ export function FlowCanvas({
     validateConnection
   } = useFlowContext();
 
+  // Prevents invalid connections including cycles in chatbot flow
   const onConnect: OnConnect = useCallback(
     (connection: Connection): void => {
-      if(validateConnection(connection)) {
-        setEdges((eds) => addEdge(connection, eds));
+      if (!validateConnection(connection)) {
+        return;
       }
+      
+      setEdges((eds) => addEdge(connection, eds));
     },
-    [edges,setEdges, validateConnection]
+    [setEdges, validateConnection]
   );
-
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // Creates new nodes when dragging from side panel
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
@@ -118,6 +116,11 @@ export function FlowCanvas({
     color: "#d1d5db"
   }), []);
 
+  // All node types use the same generic component
+  const nodeTypes = {
+    [NodeType.MESSAGE]: GenericNode,
+    [NodeType.USER]: GenericNode,
+  };
 
   const reactFlowProps: Partial<ReactFlowProps> = useMemo(() => ({
     nodes,
