@@ -84,7 +84,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     const validationData = validateGraph();
     setIsLoading(false);
     return validationData;
-  }, [nodes, edges, validateGraph]);
+  }, [validateGraph]);
 
   // Tracks node changes and sets unsaved changes flag
   const handleNodesChange: OnNodesChange = React.useCallback(
@@ -117,7 +117,21 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     },
     [onEdgesChange, setHasUnsavedChanges]
   );
+  
+  // Detects cycles in the flow
+  const hasCycle = (node: Node, connection: Connection, visited = new Set<string>()): boolean => {
+    if (!node) return false;
+    if (visited.has(node.id)) return false;
 
+    visited.add(node.id);
+
+    for (const outgoer of getOutgoers(node, nodes, edges)) {
+      if (outgoer.id === connection.source) return true;
+      if (hasCycle(outgoer, connection, visited)) return true;
+    }
+
+    return false;
+  };
   // Prevents invalid connections in chatbot flow
   const validateConnection = React.useCallback(
     (connection: Connection): boolean => {
@@ -145,23 +159,8 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
 
       return true;
     },
-    [edges]
+    [nodes, edges, hasCycle]
   );
-
-  // Detects cycles in the flow
-  const hasCycle = (node: Node, connection: Connection, visited = new Set<string>()): boolean => {
-    if (!node) return false;
-    if (visited.has(node.id)) return false;
-
-    visited.add(node.id);
-
-    for (const outgoer of getOutgoers(node, nodes, edges)) {
-      if (outgoer.id === connection.source) return true;
-      if (hasCycle(outgoer, connection, visited)) return true;
-    }
-    
-    return false;
-  };
 
   const contextValue: FlowContextType = {
     nodes,

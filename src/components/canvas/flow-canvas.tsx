@@ -76,8 +76,7 @@ export function FlowCanvas({
   }, []);
 
   // Creates new nodes when dragging from side panel
-  const onDrop = useCallback(
-    (event: React.DragEvent) => {
+  const onDrop = React.useCallback((event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
 
       const nodeType = event.dataTransfer.getData('application/reactflow');
@@ -97,7 +96,7 @@ export function FlowCanvas({
         return [...nds, newNode];
       });
     },
-    [screenToFlowPosition, nodes, setNodes]
+    [screenToFlowPosition, setNodes]
   );
 
   // Memoized style configurations

@@ -9,8 +9,6 @@ import {
   NodeProps
 } from '@xyflow/react';
 
-import type { LucideIcon } from "lucide-react";
-
 
 // Button component types
 export interface ButtonProps {
@@ -91,16 +89,9 @@ export interface AppState {
 export interface FormState {
   isSubmitting: boolean;
   errors: Record<string, string>;
-  values: Record<string, any>;
+  values: Record<string, string>;
 }
 
-// API response types
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
 
 export interface ThemeColors {
   primary: string;
@@ -139,15 +130,14 @@ export enum NodeType {
 export interface NodeConfig {
   type: NodeType;
   label: string;
-  icon: React.ComponentType<any>;
-  defaultData: Record<string, any>;
+  icon: React.ComponentType<{ className?: string; size?: number; color?: string }>;
+  defaultData: Record<string, string>;
 }
 
 export interface MessageNodeData extends NodeProps {
   data: {
     label?: string;
     content?: string;
-    [key: string]: any;
   };
 }
 
@@ -155,7 +145,6 @@ export interface UserNodeData extends NodeProps {
   data: {
     label?: string;
     title?: string;
-    [key: string]: any;
   };
 }
 

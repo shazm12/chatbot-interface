@@ -34,6 +34,6 @@ export const getAvailableNodeTypes = (): NodeType[] => {
 };
 
 // Helper function to create default node data
-export const createDefaultNodeData = (type: NodeType): Record<string, any> => {
+export const createDefaultNodeData = (type: NodeType): Record<string, string> => {
   return nodeConfigs[type].defaultData;
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { TopBar } from "@/components/layout/top-bar";
 import { SidePanel } from "@/components/panels/side-panel";
 import { FlowCanvas } from "@/components/canvas/flow-canvas";

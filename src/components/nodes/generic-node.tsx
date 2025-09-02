@@ -2,11 +2,12 @@ import React from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { useFlowContext } from "@/contexts/FlowContext";
 import { getNodeConfig } from "@/config/node-configs";
+import { NodeConfig, NodeType } from '@/types';
 
 
 export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
   const { setSelectedNodeId } = useFlowContext();
-  const nodeConfig = getNodeConfig(type as any);
+  const nodeConfig = getNodeConfig(type as NodeType);
   
   const handleNodeClick = (): void => {
     setSelectedNodeId(id);
@@ -33,7 +34,7 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
         <div className="flex items-center gap-2">
           <IconComponent className="w-4 h-4 text-blue-600" />
           <span className="text-sm font-medium text-gray-700">
-            {(data as any)?.label || nodeConfig.label}
+            {nodeConfig.label}
           </span>
         </div>
       </div>
@@ -63,13 +64,10 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
 }
 
 // Renders appropriate content based on node type and data
-function renderNodeContent(data: any, nodeConfig: any): string {
-  // Try to get content from data first, then fall back to default data
-  if (data?.content) return data.content;
-  if (data?.title) return data.title;
-  if (data?.condition) return data.condition;
-  if (data?.action) return data.action;
-  if (data?.placeholder) return data.placeholder;
+function renderNodeContent(data: Record<string, unknown>, nodeConfig: NodeConfig): string {
+
+  if (data?.content) return data.content as string;
+  if (data?.title) return data.title as string;
   
   // Fallback to first non-label property from default data
   const defaultData = nodeConfig.defaultData;
