@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft } from "lucide-react";
 import { useFlowContext } from "@/contexts/FlowContext";
 import { NodeType } from '@/types';
-
 
 export function EditScreen(): React.JSX.Element {
   const { nodes, setNodes, selectedNodeId, setSelectedNodeId, isLoading } = useFlowContext();
@@ -29,18 +27,20 @@ export function EditScreen(): React.JSX.Element {
     if (!selectedNodeId) return;
 
     setNodes((nds) =>
-      nds.map((node) =>
-        node.id === selectedNodeId
-          ? {
+      nds.map((node) => {
+        if (node.id === selectedNodeId) {
+          if (node.type === NodeType.MESSAGE) {
+            return {
               ...node,
               data: {
                 ...node.data,
                 content: messageText,
-                label: messageText,
               },
-            }
-          : node
-      )
+            };
+          }
+        }
+        return node;
+      })
     );
 
     setSelectedNodeId(null);
