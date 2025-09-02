@@ -28,7 +28,6 @@ export function NodesScreen(): React.JSX.Element {
                 draggable
                 onDragStart={(e) => handleDragStart(e, nodeType)}
                 className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2 cursor-grab active:cursor-grabbing"
-                title={config.type}
               >
                 <IconComponent className="w-4 h-4" />
                 {config.label}

@@ -102,7 +102,6 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
-// Theme types
 export interface ThemeColors {
   primary: string;
   secondary: string;
@@ -143,7 +142,6 @@ export interface NodeConfig {
   icon: React.ComponentType<any>;
   defaultData: Record<string, any>;
 }
-
 
 export interface MessageNodeData extends NodeProps {
   data: {
