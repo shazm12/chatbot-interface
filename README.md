@@ -33,6 +33,12 @@ A modern, interactive chatbot flow builder built with Next.js, React Flow, Shadc
 - **Performance Optimized**: Uses `useMemo` and `useCallback` for efficient rendering
 - **Responsive Design**: Clean white and light green theme with Tailwind CSS
 
+### 🛡️ **Flow Validation**
+- **Graph Structure Validation**: Ensures chatbot flow has proper entry points and structure
+- **Connection Validation**: Prevents invalid connections including self-loops and cycles
+- **Duplicate Prevention**: Blocks multiple connections between the same source and target
+- **Cycle Detection**: Automatically detects and prevents circular conversation flows
+
 ## 🚀 Getting Started
 
 1. **Install dependencies:**
