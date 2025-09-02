@@ -159,6 +159,11 @@ export interface UserNodeData extends NodeProps {
   };
 }
 
+export interface GraphValidation {
+  isValid: boolean;
+  error?: string;
+}
+
 // Utility types
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;

@@ -9,7 +9,10 @@ import {
   OnNodesChange,
   OnEdgesChange,
   Connection,
+  getOutgoers,
 } from '@xyflow/react';
+import { GraphValidation } from '@/types';
+
 
 interface FlowContextType {
   nodes: Node[];
@@ -22,7 +25,7 @@ interface FlowContextType {
   setSelectedNodeId: (nodeId: string | null) => void;
   isLoading: boolean;
   hasUnsavedChanges: boolean;
-  saveChanges: () => Promise<void>;
+  saveChanges: () => Promise<GraphValidation>;
   validateConnection: (connection: Connection) => boolean;
 }
 
@@ -42,29 +45,51 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState<boolean>(false);
 
-  const saveChanges = React.useCallback(async (): Promise<void> => {
+  const validateGraph = React.useCallback(
+    (): GraphValidation => {
+      if (nodes.length === 0) {
+        return {
+          isValid: false,
+          error: "No nodes in the graph"
+        };
+      }
+      if (edges.length === 0) {
+        return {
+          isValid: false,
+          error: "No edges in the graph"
+        };
+      };
+
+      // Check if there is more than one node with no target handle
+      const nodesWithNoTargetHandle = nodes.filter((node) => !edges.some((edge) => edge.target === node.id));
+      if (nodesWithNoTargetHandle.length > 1) {
+        return {
+          isValid: false,
+          error: "More than one node with no target handle"
+        };
+      }
+
+      return {
+        isValid: true,
+        error: undefined
+      };
+    },
+    [nodes, edges]
+  );
+
+  const saveChanges = React.useCallback(async (): Promise<GraphValidation> => {
     setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Edges");
-      console.log(edges);
-      console.log("Nodes");
-      console.log(nodes);
-
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('Error saving changes:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [nodes, edges]);
+    // Simulate API call delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const validationData = validateGraph();
+    setIsLoading(false);
+    return validationData;
+  }, [nodes, edges, validateGraph]);
 
   const handleNodesChange: OnNodesChange = React.useCallback(
     (changes) => {
 
-      
+
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === 'dimensions'
       );
@@ -94,7 +119,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
 
   const validateConnection = React.useCallback(
     (connection: Connection): boolean => {
-      
+
       // Prevent self-connections
       if (connection.source === connection.target) {
         return false;
@@ -111,10 +136,29 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
         return false;
       }
 
+      const target = nodes.find((node) => node.id === connection.target);
+
+      if (hasCycle(target as Node, connection)) {
+        return false;
+      }
+
       return true;
     },
     [edges]
   );
+
+
+  const hasCycle = (node: Node, connection: Connection, visited = new Set<string>()) => {
+    if (!node) return false;
+    if (visited.has(node.id)) return false;
+
+    visited.add(node.id);
+
+    for (const outgoer of getOutgoers(node, nodes, edges)) {
+      if (outgoer.id === connection.source) return true;
+      if (hasCycle(outgoer, connection, visited)) return true;
+    }
+  };
 
   const contextValue: FlowContextType = {
     nodes,
