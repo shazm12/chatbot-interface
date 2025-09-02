@@ -8,6 +8,7 @@ import {
   useEdgesState,
   OnNodesChange,
   OnEdgesChange,
+  Connection,
 } from '@xyflow/react';
 
 interface FlowContextType {
@@ -22,6 +23,7 @@ interface FlowContextType {
   isLoading: boolean;
   hasUnsavedChanges: boolean;
   saveChanges: () => Promise<void>;
+  validateConnection: (connection: Connection) => boolean;
 }
 
 const FlowContext = createContext<FlowContextType | undefined>(undefined);
@@ -46,6 +48,10 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Edges");
+      console.log(edges);
+      console.log("Nodes");
+      console.log(nodes);
 
       setHasUnsavedChanges(false);
     } catch (error) {
@@ -53,11 +59,11 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [nodes, edges]);
 
   const handleNodesChange: OnNodesChange = React.useCallback(
     (changes) => {
-      onNodesChange(changes);
+
       
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === 'dimensions'
@@ -73,7 +79,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
 
   const handleEdgesChange: OnEdgesChange = React.useCallback(
     (changes) => {
-      onEdgesChange(changes);
+
 
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === "replace"
@@ -84,6 +90,30 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
       }
     },
     [onEdgesChange, setHasUnsavedChanges]
+  );
+
+  const validateConnection = React.useCallback(
+    (connection: Connection): boolean => {
+      
+      // Prevent self-connections
+      if (connection.source === connection.target) {
+        return false;
+      }
+
+      // Prevent duplicate connections
+      if (
+        edges.some(
+          (edge) =>
+            edge.source === connection.source &&
+            edge.target === connection.target
+        )
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    [edges]
   );
 
   const contextValue: FlowContextType = {
@@ -98,6 +128,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     isLoading,
     hasUnsavedChanges,
     saveChanges,
+    validateConnection,
   };
 
   return (
@@ -106,6 +137,8 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     </FlowContext.Provider>
   );
 }
+
+
 
 export function useFlowContext(): FlowContextType {
   const context = useContext(FlowContext);

@@ -19,7 +19,7 @@ import { createNode } from "@/helpers/node/createNode";
 import { GenericNode } from "@/components/nodes/generic-node";
 import { useFlowContext } from "@/contexts/FlowContext";
 
-// Define node types directly using GenericNode
+
 const nodeTypes = {
   [NodeType.MESSAGE]: GenericNode,
   [NodeType.USER]: GenericNode,
@@ -59,20 +59,17 @@ export function FlowCanvas({
     setNodes, 
     setEdges, 
     onNodesChange, 
-    onEdgesChange 
+    onEdgesChange,
+    validateConnection
   } = useFlowContext();
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection): void => {
-      
-        // Prevent self-connections
-      if (connection.source === connection.target) {
-        return;
+      if(validateConnection(connection)) {
+        setEdges((eds) => addEdge(connection, eds));
       }
-      
-      setEdges((eds) => addEdge(connection, eds));
     },
-    [setEdges]
+    [edges,setEdges, validateConnection]
   );
 
 
