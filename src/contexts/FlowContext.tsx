@@ -58,7 +58,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
   const handleNodesChange: OnNodesChange = React.useCallback(
     (changes) => {
       onNodesChange(changes);
-      // Check if there are meaningful changes (not just selection/position)
+      
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === 'dimensions'
       );
