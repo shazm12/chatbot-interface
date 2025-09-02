@@ -7,7 +7,7 @@ import { NodeType } from '@/types';
 export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
   const { setSelectedNodeId } = useFlowContext();
   const nodeConfig = getNodeConfig(type as any);
-  
+
   const handleNodeClick = (): void => {
     setSelectedNodeId(id);
   };
@@ -24,7 +24,7 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
   const IconComponent = nodeConfig.icon;
 
   return (
-    <div 
+    <div
       onClick={handleNodeClick}
       className="min-w-[200px] bg-white border-2 border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
     >
@@ -33,7 +33,7 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
         <div className="flex items-center gap-2">
           <IconComponent className="w-4 h-4 text-blue-600" />
           <span className="text-sm font-medium text-gray-700">
-            {(data as any)?.label || nodeConfig.label}
+            {nodeConfig.label}
           </span>
         </div>
       </div>
@@ -65,14 +65,13 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
 // Helper function to render appropriate content based on node type
 function renderNodeContent(data: any, nodeConfig: any): string {
 
-  
-  switch(nodeConfig.type) {
+  switch (nodeConfig.type) {
     case NodeType.MESSAGE:
       return data.content;
     case NodeType.USER:
       return data.title;
   }
-  
+
   // Fallback to first non-label property from default data
   const defaultData = nodeConfig.defaultData;
   for (const [key, value] of Object.entries(defaultData)) {
@@ -80,6 +79,6 @@ function renderNodeContent(data: any, nodeConfig: any): string {
       return value;
     }
   }
-  
+
   return 'Click to edit...';
 }
