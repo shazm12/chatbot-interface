@@ -13,7 +13,6 @@ import {
 } from '@xyflow/react';
 import { GraphValidation } from '@/types';
 
-
 interface FlowContextType {
   nodes: Node[];
   edges: Edge[];
@@ -45,6 +44,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState<boolean>(false);
 
+  // Validates chatbot flow graph structure
   const validateGraph = React.useCallback(
     (): GraphValidation => {
       if (nodes.length === 0) {
@@ -60,7 +60,7 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
         };
       };
 
-      // Check if there is more than one node with no target handle
+      // Chatbot flow must have only one entry point (no target handle)
       const nodesWithNoTargetHandle = nodes.filter((node) => !edges.some((edge) => edge.target === node.id));
       if (nodesWithNoTargetHandle.length > 1) {
         return {
@@ -86,14 +86,14 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     return validationData;
   }, [nodes, edges, validateGraph]);
 
+  // Tracks node changes and sets unsaved changes flag
   const handleNodesChange: OnNodesChange = React.useCallback(
     (changes) => {
-
+      onNodesChange(changes);
 
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === 'dimensions'
       );
-
 
       if (hasStructuralChanges) {
         setHasUnsavedChanges(true);
@@ -102,9 +102,10 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     [onNodesChange, setHasUnsavedChanges]
   );
 
+  // Tracks edge changes and sets unsaved changes flag
   const handleEdgesChange: OnEdgesChange = React.useCallback(
     (changes) => {
-
+      onEdgesChange(changes);
 
       const hasStructuralChanges = changes.some(
         (change) => change.type === 'add' || change.type === 'remove' || change.type === "replace"
@@ -117,9 +118,9 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     [onEdgesChange, setHasUnsavedChanges]
   );
 
+  // Prevents invalid connections in chatbot flow
   const validateConnection = React.useCallback(
     (connection: Connection): boolean => {
-
       // Prevent self-connections
       if (connection.source === connection.target) {
         return false;
@@ -147,8 +148,8 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     [edges]
   );
 
-
-  const hasCycle = (node: Node, connection: Connection, visited = new Set<string>()) => {
+  // Detects cycles in the flow
+  const hasCycle = (node: Node, connection: Connection, visited = new Set<string>()): boolean => {
     if (!node) return false;
     if (visited.has(node.id)) return false;
 
@@ -158,6 +159,8 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
       if (outgoer.id === connection.source) return true;
       if (hasCycle(outgoer, connection, visited)) return true;
     }
+    
+    return false;
   };
 
   const contextValue: FlowContextType = {
@@ -181,8 +184,6 @@ export function FlowProvider({ children }: FlowProviderProps): React.JSX.Element
     </FlowContext.Provider>
   );
 }
-
-
 
 export function useFlowContext(): FlowContextType {
   const context = useContext(FlowContext);
