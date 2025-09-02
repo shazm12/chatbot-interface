@@ -2,6 +2,7 @@ import React from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { useFlowContext } from "@/contexts/FlowContext";
 import { getNodeConfig } from "@/config/node-configs";
+import { NodeType } from '@/types';
 
 export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
   const { setSelectedNodeId } = useFlowContext();
@@ -63,12 +64,14 @@ export function GenericNode({ data, id, type }: NodeProps): React.JSX.Element {
 
 // Helper function to render appropriate content based on node type
 function renderNodeContent(data: any, nodeConfig: any): string {
-  // Try to get content from data first, then fall back to default data
-  if (data?.content) return data.content;
-  if (data?.title) return data.title;
-  if (data?.condition) return data.condition;
-  if (data?.action) return data.action;
-  if (data?.placeholder) return data.placeholder;
+
+  
+  switch(nodeConfig.type) {
+    case NodeType.MESSAGE:
+      return data.content;
+    case NodeType.USER:
+      return data.title;
+  }
   
   // Fallback to first non-label property from default data
   const defaultData = nodeConfig.defaultData;
