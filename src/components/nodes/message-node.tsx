@@ -1,9 +1,10 @@
 import React from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
-import { MessageCircle } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useFlowContext } from "@/contexts/FlowContext";
+import { MessageNodeData } from '@/types';
 
-export function MessageNode({ data, id }: NodeProps): React.JSX.Element {
+export function MessageNode({ data, id }: MessageNodeData): React.JSX.Element {
   const { setSelectedNodeId } = useFlowContext();
   
   const handleNodeClick = (): void => {
@@ -18,7 +19,7 @@ export function MessageNode({ data, id }: NodeProps): React.JSX.Element {
       {/* Node Header */}
       <div className="bg-blue-50 px-3 py-2 rounded-t-lg border-b border-gray-100">
         <div className="flex items-center gap-2">
-          <MessageCircle className="w-4 h-4 text-blue-600" />
+          <MessageSquare className="w-4 h-4 text-blue-600" />
           <span className="text-sm font-medium text-gray-700">
             {(data as any)?.label || 'Message'}
           </span>
@@ -37,11 +38,13 @@ export function MessageNode({ data, id }: NodeProps): React.JSX.Element {
         type="target"
         position={Position.Left}
         className="w-3 h-3 bg-green-400 border-2 border-white"
+        isConnectable
       />
       <Handle
         type="source"
         position={Position.Right}
         className="w-3 h-3 bg-green-400 border-2 border-white"
+        isConnectable
       />
     </div>
   );
