@@ -16,8 +16,14 @@ import {
 import '@xyflow/react/dist/style.css';
 import { NodeType } from "@/types";
 import { createNode } from "@/helpers/node/createNode";
-import nodeTypes from "@/components/nodes/node-registry";
+import { GenericNode } from "@/components/nodes/generic-node";
 import { useFlowContext } from "@/contexts/FlowContext";
+
+// Define node types directly using GenericNode
+const nodeTypes = {
+  [NodeType.MESSAGE]: GenericNode,
+  [NodeType.USER]: GenericNode,
+};
 
 interface FlowCanvasComponentProps {
   className?: string;
